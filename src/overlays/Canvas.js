@@ -1,7 +1,7 @@
 import React from "react"
 import store from './model'
-import {actions} from './model'
-import {OPRATION} from './model'
+import { actions } from './model'
+import { OPRATION } from './model'
 import '../overlays/Overlay.css'
 
 export class Canvas extends React.Component {
@@ -38,6 +38,8 @@ export class Canvas extends React.Component {
         const canvas = this.canvas.current
         const context = canvas.getContext('2d')
         context.strokeStyle = "#FF0000"
+        context.lineWidth = 1
+
         // context.strokeRect(5, 5, canvas.width - 10, canvas.height - 10)
         console.log("canvas w=", canvas.width, "canvas height = ", canvas.height)
         var rect = {
@@ -69,7 +71,7 @@ export class Canvas extends React.Component {
             this.downX = e.offsetX
             this.downY = e.offsetY
 
-            downRect = {...rect}
+            downRect = { ...rect }
 
             switch (this.state.opration) {
                 case OPRATION.CONTENT_RECT:
@@ -144,10 +146,10 @@ export class Canvas extends React.Component {
             let canvasHeight = this.canvas.current.height
             //image is thinner than canvas
             let reactWidthBleedingInImage = mapRectInImage(imageWidth, imageHeight, canvasWidth, canvasHeight, rect)
-            json.left = reactWidthBleedingInImage.left
-            json.top = reactWidthBleedingInImage.top
-            json.right = reactWidthBleedingInImage.right
-            json.bottom = reactWidthBleedingInImage.bottom
+            json.left = reactWidthBleedingInImage.left -1
+            json.top = reactWidthBleedingInImage.top -1
+            json.right = reactWidthBleedingInImage.right +1
+            json.bottom = reactWidthBleedingInImage.bottom +1
             json.margins = []
 
             let safeRectInImage = mapRectInImage(imageWidth, imageHeight, canvasWidth, canvasHeight, this.safeRect)
@@ -240,19 +242,32 @@ export class Canvas extends React.Component {
             rect.left = this.downX;
             rect.top = this.downY;
             rect.width = e.offsetX - this.downX;
-            rect.height = rect.width / this.state.ratio;
+            if (this.state.ratio != 0) {
+                rect.height = rect.width / this.state.ratio;
+            } else {
+                rect.height = e.offsetY - this.downY
+            }
+
             drawMove(context, rect);
         }
 
         const handleLeft = (e) => {
             rect.left = e.offsetX;
             rect.width = downRect.width + (this.downX - e.offsetX);
-            rect.height = rect.width / this.state.ratio;
+            if (this.state.ratio != 0) {
+                rect.height = rect.width / this.state.ratio;
+            } else {
+                rect.height =downRect.height+ e.offsetY - this.downY;
+            }
             drawMove(context, rect);
         }
         const handleRight = (e) => {
             rect.width = downRect.width + (e.offsetX - this.downX);
-            rect.height = rect.width / this.state.ratio;
+            if (this.state.ratio != 0) {
+                rect.height = rect.width / this.state.ratio;
+            } else {
+                rect.height = downRect.height+ e.offsetY - this.downY;
+            }
             rect.left = e.offsetX - rect.width
             drawMove(context, rect);
 
@@ -261,13 +276,21 @@ export class Canvas extends React.Component {
         const handleTop = (e) => {
             rect.top = e.offsetY;
             rect.height = downRect.height + (this.downY - e.offsetY);
-            rect.width = rect.height * this.state.ratio;
+            if (this.state.ratio != 0) {
+                rect.width = rect.height * this.state.ratio;
+            } else {
+                rect.width = downRect.width + e.offsetX - this.downX;
+            }
             drawMove(context, rect);
         }
 
         const handleBottom = (e) => {
             rect.height = downRect.height + (e.offsetY - this.downY);
-            rect.width = rect.height * this.state.ratio;
+            if (this.state.ratio != 0) {
+                rect.width = rect.height * this.state.ratio;
+            } else {
+                rect.width = downRect.width + e.offsetX - this.downX;
+            }
             rect.top = e.offsetY - rect.height
             drawMove(context, rect);
 
@@ -315,11 +338,16 @@ export class Canvas extends React.Component {
         }
 
         const drawMove = (draw, rect) => {
-            this.safeRect = {...rect}
-            this.withBleedRect.left = this.safeRect.left - (this.safeRect.width / this.state.w * this.state.bw)
-            this.withBleedRect.top = this.safeRect.top - (this.safeRect.height / this.state.h * this.state.bh)
-            this.withBleedRect.width = (this.safeRect.width / this.state.w) * (Number.parseFloat(this.state.w) + this.state.bw * 2)
-            this.withBleedRect.height = (this.safeRect.height / this.state.h) * (Number.parseFloat(this.state.h) + this.state.bh * 2)
+            this.safeRect = { ...rect }
+            if (this.state.ratio == 0) {
+                this.withBleedRect = { ...this.safeRect }
+            } else {
+                this.withBleedRect.left = this.safeRect.left - (this.safeRect.width / this.state.w * this.state.bw)
+                this.withBleedRect.top = this.safeRect.top - (this.safeRect.height / this.state.h * this.state.bh)
+                this.withBleedRect.width = (this.safeRect.width / this.state.w) * (Number.parseFloat(this.state.w) + this.state.bw * 2)
+                this.withBleedRect.height = (this.safeRect.height / this.state.h) * (Number.parseFloat(this.state.h) + this.state.bh * 2)
+            }
+
             drawState(draw)
         }
 
@@ -335,7 +363,7 @@ export class Canvas extends React.Component {
         }
 
         const drawRect = (context, rect) => {
-            context.strokeRect(rect.left, rect.top, rect.width, rect.height)
+            context.strokeRect(rect.left - 1, rect.top - 1, rect.width + 2, rect.height + 2)
         }
 
 

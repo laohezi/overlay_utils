@@ -28,7 +28,7 @@ const rootReducer = (state, action) => {
                 ...state, opration: action.payload
             }
         case "UPDATE_SIZE":
-            let ratio =1.0
+            let ratio =0.0
             if(action.payload.w!=0 && action.payload.h!=0){
                 ratio = action.payload.w/action.payload.h
             } 
