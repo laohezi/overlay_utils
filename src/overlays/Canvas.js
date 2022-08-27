@@ -146,10 +146,10 @@ export class Canvas extends React.Component {
             let canvasHeight = this.canvas.current.height
             //image is thinner than canvas
             let reactWidthBleedingInImage = mapRectInImage(imageWidth, imageHeight, canvasWidth, canvasHeight, rect)
-            json.left = reactWidthBleedingInImage.left -1
-            json.top = reactWidthBleedingInImage.top -1
-            json.right = reactWidthBleedingInImage.right +1
-            json.bottom = reactWidthBleedingInImage.bottom +1
+            json.left = reactWidthBleedingInImage.left - 1
+            json.top = reactWidthBleedingInImage.top - 1
+            json.right = reactWidthBleedingInImage.right + 1
+            json.bottom = reactWidthBleedingInImage.bottom + 1
             json.margins = []
 
             let safeRectInImage = mapRectInImage(imageWidth, imageHeight, canvasWidth, canvasHeight, this.safeRect)
@@ -257,7 +257,7 @@ export class Canvas extends React.Component {
             if (this.state.ratio != 0) {
                 rect.height = rect.width / this.state.ratio;
             } else {
-                rect.height =downRect.height+ e.offsetY - this.downY;
+                rect.height = downRect.height + e.offsetY - this.downY;
             }
             drawMove(context, rect);
         }
@@ -266,7 +266,7 @@ export class Canvas extends React.Component {
             if (this.state.ratio != 0) {
                 rect.height = rect.width / this.state.ratio;
             } else {
-                rect.height = downRect.height+ e.offsetY - this.downY;
+                rect.height = downRect.height + e.offsetY - this.downY;
             }
             rect.left = e.offsetX - rect.width
             drawMove(context, rect);
@@ -296,14 +296,44 @@ export class Canvas extends React.Component {
 
         }
 
+        const handleMoveByKeyBoard = (e) => {
+            console.log(e)
+            // eslint-disable-next-line default-case 
+            switch (e.key) {
+                case "ArrowLeft":
+                    rect.left = rect.left - 1
+                    rect.right = rect.right - 1
+                    drawMove(context, rect)
+                    break;
+                case "ArrowRight":
+                    rect.left = rect.left + 1
+                    rect.right = rect.right + 1
+                    drawMove(context, rect)
+                    break;
+                case "ArrowUp":
+                    rect.top = rect.top - 1
+                    rect.bottom = rect.bottom - 1
+                    drawMove(context, rect)
+                    break;
+                case "ArrowDown":
+                    rect.top = rect.top + 1
+                    rect.bottom = rect.bottom + 1
+                    drawMove(context, rect)
+                    break;
+
+
+            }
+        }
+
         const handleMove = (e) => {
             rect.left = downRect.left + (e.offsetX - this.downX)
             rect.top = downRect.top + (e.offsetY - this.downY)
             rect.width = downRect.width
             rect.height = downRect.height
             drawMove(context, rect);
-
         }
+
+
 
         canvas.onmouseout = (e) => {
             this.isMouseDown = false
@@ -330,9 +360,15 @@ export class Canvas extends React.Component {
 
         }
 
+        document.onkeydown = (e) => {
+            handleMoveByKeyBoard(e)
+
+
+        }
+
         canvas.onmouseup = (e) => {
             this.isMouseDown = false
-            updateJSon()
+            //updateJSon()
             drawState(context)
 
         }
@@ -352,6 +388,7 @@ export class Canvas extends React.Component {
         }
 
         const drawState = (draw) => {
+            updateJSon()
             context.clearRect(0, 0, canvas.width, canvas.height)
             drawRect(draw, this.withBleedRect)
             drawRect(draw, this.safeRect)
@@ -361,9 +398,11 @@ export class Canvas extends React.Component {
                 }
             )
         }
-
+        
         const drawRect = (context, rect) => {
+
             context.strokeRect(rect.left - 1, rect.top - 1, rect.width + 2, rect.height + 2)
+            
         }
 
 

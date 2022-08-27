@@ -94,10 +94,11 @@ export class ButtonArea extends React.Component {
                 </div>
                 <form>
                     magins
-                    <input type={"radio"} name={"action"} onClick={() => this.onClick(OPRATION.LEFT_TOP)} />
-                    <input type={"radio"} name={"action"} onClick={() => this.onClick(OPRATION.RIGHT_TOP)} />
-                    <input type={"radio"} name={"action"} onClick={() => this.onClick(OPRATION.RIGHT_BOTTOM)} />
-                    <input type={"radio"} name={"action"} onClick={() => this.onClick(OPRATION.LEFT_BOTTOM)} />
+                    <label className={"radio_lable"} for ={"left_top"} >left_top</label>
+                    <input type={"radio"} id ={"left_top"} name={"action"} onClick={() => this.onClick(OPRATION.LEFT_TOP)} />
+                    <input type={"radio"} id ={"right_top"} name={"action"} onClick={() => this.onClick(OPRATION.RIGHT_TOP)} />
+                    <input type={"radio"} id ={"right_bottom"} name={"action"} onClick={() => this.onClick(OPRATION.RIGHT_BOTTOM)} />
+                    <input type={"radio"} id ={"left_bottom"} name={"action"} onClick={() => this.onClick(OPRATION.LEFT_BOTTOM)} />
 
 
                 </form>
@@ -107,3 +108,4 @@ export class ButtonArea extends React.Component {
 
 }
 
+      
