@@ -395,6 +395,7 @@ export class Canvas extends React.Component {
             spliceArr(this.margins, 2).map(
                 (point) => {
                     draw.fillRect(point[0], point[1], 2, 2)
+                    
                 }
             )
         }
