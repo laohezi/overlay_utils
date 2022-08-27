@@ -63,42 +63,12 @@ export class Canvas extends React.Component {
 
 
         var downRect
-        var currentRect
 
 
-        canvas.onmousedown = (e) => {
-            this.isMouseDown = true
-            this.downX = e.offsetX
-            this.downY = e.offsetY
-
-            downRect = { ...rect }
-
-            switch (this.state.opration) {
-                case OPRATION.CONTENT_RECT:
-                    this.handle = checkHandle(e)
-                    break;
-                case OPRATION.LEFT_TOP:
-                    this.margins[0] = this.downX
-                    this.margins[1] = this.downY
-                    break;
-                case OPRATION.RIGHT_TOP:
-                    this.margins[2] = this.downX
-                    this.margins[3] = this.downY
-                    break;
-                case OPRATION.RIGHT_BOTTOM:
-                    this.margins[4] = this.downX
-                    this.margins[5] = this.downY
-                    break;
-                case OPRATION.LEFT_BOTTOM:
-                    this.margins[6] = this.downX
-                    this.margins[7] = this.downY
-                    break;
 
 
-            }
 
 
-        }
 
         function mapRectInImage(imageWidth, imageHeight, canvasWidth, canvasHeight, rect) {
             let rectInImage = {}
@@ -237,108 +207,205 @@ export class Canvas extends React.Component {
                 return HANDLE.NEW
             }
         }
-
-        const updateNewRect = (e) => {
-            rect.left = this.downX;
-            rect.top = this.downY;
-            rect.width = e.offsetX - this.downX;
-            if (this.state.ratio != 0) {
-                rect.height = rect.width / this.state.ratio;
-            } else {
-                rect.height = e.offsetY - this.downY
-            }
-
-            drawMove(context, rect);
-        }
-
-        const handleLeft = (e) => {
-            rect.left = e.offsetX;
-            rect.width = downRect.width + (this.downX - e.offsetX);
-            if (this.state.ratio != 0) {
-                rect.height = rect.width / this.state.ratio;
-            } else {
-                rect.height = downRect.height + e.offsetY - this.downY;
-            }
-            drawMove(context, rect);
-        }
-        const handleRight = (e) => {
-            rect.width = downRect.width + (e.offsetX - this.downX);
-            if (this.state.ratio != 0) {
-                rect.height = rect.width / this.state.ratio;
-            } else {
-                rect.height = downRect.height + e.offsetY - this.downY;
-            }
-            rect.left = e.offsetX - rect.width
-            drawMove(context, rect);
-
-        }
-
-        const handleTop = (e) => {
-            rect.top = e.offsetY;
-            rect.height = downRect.height + (this.downY - e.offsetY);
-            if (this.state.ratio != 0) {
-                rect.width = rect.height * this.state.ratio;
-            } else {
-                rect.width = downRect.width + e.offsetX - this.downX;
-            }
-            drawMove(context, rect);
-        }
-
-        const handleBottom = (e) => {
-            rect.height = downRect.height + (e.offsetY - this.downY);
-            if (this.state.ratio != 0) {
-                rect.width = rect.height * this.state.ratio;
-            } else {
-                rect.width = downRect.width + e.offsetX - this.downX;
-            }
-            rect.top = e.offsetY - rect.height
-            drawMove(context, rect);
-
-        }
-
-        const handleMoveByKeyBoard = (e) => {
+        const handleKeyEvent = (e) => {
             console.log(e)
-            // eslint-disable-next-line default-case 
-            switch (e.key) {
-                case "ArrowLeft":
-                    rect.left = rect.left - 1
-                    rect.right = rect.right - 1
-                    drawMove(context, rect)
-                    break;
-                case "ArrowRight":
-                    rect.left = rect.left + 1
-                    rect.right = rect.right + 1
-                    drawMove(context, rect)
-                    break;
-                case "ArrowUp":
-                    rect.top = rect.top - 1
-                    rect.bottom = rect.bottom - 1
-                    drawMove(context, rect)
-                    break;
-                case "ArrowDown":
-                    rect.top = rect.top + 1
-                    rect.bottom = rect.bottom + 1
-                    drawMove(context, rect)
-                    break;
+            const  state = this.state
+            function handleRightByKey(e) {
+                if (e.key == "ArrowLeft"){
+                    rect.right = rect.right-1
+                    rect.width = rect.width -1
+                    if (state.ratio != 0) {
+                        rect.height = rect.width / state.ratio;
+                    }
 
+
+                }else if (e.key == "ArrowRight"){
+                    rect.right = rect.right+1
+                    rect.width = rect.width +1
+                    if (state.ratio != 0) {
+                        rect.height = rect.width /state.ratio;
+                    }
+
+                }
+                drawMove(context, rect);
 
             }
+
+            function handleLeftByKey(e) {
+                if (e.key == "ArrowLeft"){
+                    rect.left = rect.left-1
+                    rect.width = rect.width +1
+                    if (state.ratio != 0) {
+                        rect.height = rect.width / state.ratio;
+                    }
+
+
+                }else if (e.key == "ArrowRight"){
+                    rect.left = rect.left+1
+                    rect.width = rect.width -1
+                    if (state.ratio != 0) {
+                        rect.height = rect.width /state.ratio;
+                    }
+
+                }
+                drawMove(context, rect);
+            }
+
+            function handleMoveByKey(e) {
+                switch (e.key) {
+                    case "ArrowLeft":
+                        rect.left = rect.left - 1
+                        rect.right = rect.right - 1
+                        drawMove(context, rect)
+                        break;
+                    case "ArrowRight":
+                        rect.left = rect.left + 1
+                        rect.right = rect.right + 1
+                        drawMove(context, rect)
+                        break;
+                    case "ArrowUp":
+                        rect.top = rect.top - 1
+                        rect.bottom = rect.bottom - 1
+                        drawMove(context, rect)
+                        break;
+                    case "ArrowDown":
+                        rect.top = rect.top + 1
+                        rect.bottom = rect.bottom + 1
+                        drawMove(context, rect)
+                        break;
+                }
+            }
+
+            function handleTopByKey(e) {
+                if (e.key == "ArrowUp") {
+                    rect.top = rect.top - 1
+                    rect.height = rect.height + 1
+                    if (state.ratio != 0) {
+                        rect.width = rect.height * state.ratio;
+                    }
+
+
+                } else if (e.key == "ArrowDown") {
+                    rect.top = rect.top + 1
+                    rect.height = rect.height - 1
+                    if (state.ratio != 0) {
+                        rect.width = rect.height * state.ratio;
+                    }
+
+                }
+                drawMove(context, rect);
+
+            }
+
+            function handleBottomByKey(e) {
+                if (e.key == "ArrowUp") {
+                    rect.bottom = rect.bottom - 1
+                    rect.height = rect.height - 1
+                    if (state.ratio != 0) {
+                        rect.width = rect.height * state.ratio;
+                    }
+
+
+                } else if (e.key == "ArrowDown") {
+                    rect.bottom = rect.bottom + 1
+                    rect.height = rect.height + 1
+                    if (state.ratio != 0) {
+                        rect.width = rect.height * state.ratio;
+                    }
+
+                }
+                drawMove(context, rect);
+            }
+
+            // eslint-disable-next-line default-case
+            switch (this.handle){
+                case HANDLE.MOVE :
+                    handleMoveByKey(e)
+                    break;
+                case HANDLE.LEFT :
+                    handleLeftByKey(e)
+                    break;
+                case HANDLE.RIGHT :
+                    handleRightByKey(e)
+                    break;
+                case HANDLE.TOP :
+                    handleTopByKey(e)
+                    break;
+                case HANDLE.BOTTOM :
+                    handleBottomByKey(e)
+                    break;
+            }
+
         }
+        const handleMouseMove = (e)=>{
+            let state = this.state
+            let downX = this.downX
+            let downY = this.downY
+            function handleLeft(e) {
+                rect.left = e.offsetX;
+                rect.width = downRect.width + (downX - e.offsetX);
+                if (state.ratio != 0) {
+                    rect.height = rect.width / state.ratio;
+                } else {
+                    rect.height = downRect.height + e.offsetY - downY;
+                }
+                drawMove(context, rect);
+            }
 
-        const handleMove = (e) => {
-            rect.left = downRect.left + (e.offsetX - this.downX)
-            rect.top = downRect.top + (e.offsetY - this.downY)
-            rect.width = downRect.width
-            rect.height = downRect.height
-            drawMove(context, rect);
-        }
+            function handleRight(e) {
+                rect.width = downRect.width + (e.offsetX - downX);
+                if (state.ratio != 0) {
+                    rect.height = rect.width / state.ratio;
+                } else {
+                    rect.height = downRect.height + e.offsetY - downY;
+                }
+                rect.left = e.offsetX - rect.width
+                drawMove(context, rect);
+            }
 
+            function handleTop(e) {
+                rect.top = e.offsetY;
+                rect.height = downRect.height + (downY - e.offsetY);
+                if (state.ratio != 0) {
+                    rect.width = rect.height * state.ratio;
+                } else {
+                    rect.width = downRect.width + e.offsetX - downX;
+                }
+                drawMove(context, rect);
+            }
 
+            function handleBottom(e) {
+                rect.height = downRect.height + (e.offsetY - downY);
+                if (state.ratio != 0) {
+                    rect.width = rect.height * state.ratio;
+                } else {
+                    rect.width = downRect.width + e.offsetX - downX;
+                }
+                rect.top = e.offsetY - rect.height
+                drawMove(context, rect);
+            }
 
-        canvas.onmouseout = (e) => {
-            this.isMouseDown = false
-        }
-        canvas.onmousemove = (e) => {
+            function handleMove(e) {
+                rect.left = downRect.left + (e.offsetX - downX)
+                rect.top = downRect.top + (e.offsetY - downY)
+                rect.width = downRect.width
+                rect.height = downRect.height
+                drawMove(context, rect);
+            }
+
+            function updateNewRect(e) {
+                rect.left = downX;
+                rect.top = downY;
+                rect.width = e.offsetX - downX;
+                if (state.ratio != 0) {
+                    rect.height = rect.width / state.ratio;
+                } else {
+                    rect.height = e.offsetY - downY
+                }
+
+                drawMove(context, rect);
+            }
+
             if (this.isMouseDown && this.state.opration == OPRATION.CONTENT_RECT) {
                 if (this.handle == HANDLE.LEFT) {
                     handleLeft(e);
@@ -353,25 +420,54 @@ export class Canvas extends React.Component {
                 } else {
                     updateNewRect(e);
                 }
-
-
             }
+        }
+        const handleMouseDown =(e)=>{
+            this.isMouseDown = true
+            this.downX = e.offsetX
+            this.downY = e.offsetY
 
+            downRect = { ...rect }
 
+            switch (this.state.opration) {
+                case OPRATION.CONTENT_RECT:
+                    this.handle = checkHandle(e)
+                    break;
+                case OPRATION.LEFT_TOP:
+                    this.margins[0] = this.downX
+                    this.margins[1] = this.downY
+                    break;
+                case OPRATION.RIGHT_TOP:
+                    this.margins[2] = this.downX
+                    this.margins[3] = this.downY
+                    break;
+                case OPRATION.RIGHT_BOTTOM:
+                    this.margins[4] = this.downX
+                    this.margins[5] = this.downY
+                    break;
+                case OPRATION.LEFT_BOTTOM:
+                    this.margins[6] = this.downX
+                    this.margins[7] = this.downY
+                    break;
+            }
         }
 
-        document.onkeydown = (e) => {
-            handleMoveByKeyBoard(e)
 
-
+        canvas.onmousedown = handleMouseDown
+        canvas.onmousemove = handleMouseMove
+        canvas.onmouseout = (e) => {
+            this.isMouseDown = false
         }
-
         canvas.onmouseup = (e) => {
             this.isMouseDown = false
             //updateJSon()
             drawState(context)
 
         }
+
+        document.onkeydown = handleKeyEvent
+
+
 
         const drawMove = (draw, rect) => {
             this.safeRect = { ...rect }
@@ -422,6 +518,8 @@ export class Canvas extends React.Component {
             return reArr
         }
     }
+
+
 
 
 }
