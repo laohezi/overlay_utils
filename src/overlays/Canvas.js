@@ -64,6 +64,8 @@ export class Canvas extends React.Component {
 
         var downRect
 
+        var keystep = 0.5
+
 
 
 
@@ -116,10 +118,10 @@ export class Canvas extends React.Component {
             let canvasHeight = this.canvas.current.height
             //image is thinner than canvas
             let reactWidthBleedingInImage = mapRectInImage(imageWidth, imageHeight, canvasWidth, canvasHeight, rect)
-            json.left = reactWidthBleedingInImage.left - 1
-            json.top = reactWidthBleedingInImage.top - 1
-            json.right = reactWidthBleedingInImage.right + 1
-            json.bottom = reactWidthBleedingInImage.bottom + 1
+            json.left = reactWidthBleedingInImage.left
+            json.top = reactWidthBleedingInImage.top 
+            json.right = reactWidthBleedingInImage.right
+            json.bottom = reactWidthBleedingInImage.bottom 
             json.margins = []
 
             let safeRectInImage = mapRectInImage(imageWidth, imageHeight, canvasWidth, canvasHeight, this.safeRect)
@@ -212,16 +214,18 @@ export class Canvas extends React.Component {
             const  state = this.state
             function handleRightByKey(e) {
                 if (e.key == "ArrowLeft"){
-                    rect.right = rect.right-1
-                    rect.width = rect.width -1
+                    
+                    rect.right = rect.right-keystep
+                    rect.width = rect.width -keystep
                     if (state.ratio != 0) {
                         rect.height = rect.width / state.ratio;
                     }
 
 
                 }else if (e.key == "ArrowRight"){
-                    rect.right = rect.right+1
-                    rect.width = rect.width +1
+            
+                    rect.right = rect.right+keystep
+                    rect.width = rect.width +keystep
                     if (state.ratio != 0) {
                         rect.height = rect.width /state.ratio;
                     }
@@ -230,19 +234,19 @@ export class Canvas extends React.Component {
                 drawMove(context, rect);
 
             }
-
+        
             function handleLeftByKey(e) {
                 if (e.key == "ArrowLeft"){
-                    rect.left = rect.left-1
-                    rect.width = rect.width +1
+                    rect.left = rect.left-keystep
+                    rect.width = rect.width +keystep
                     if (state.ratio != 0) {
                         rect.height = rect.width / state.ratio;
                     }
 
 
                 }else if (e.key == "ArrowRight"){
-                    rect.left = rect.left+1
-                    rect.width = rect.width -1
+                    rect.left = rect.left+keystep
+                    rect.width = rect.width -keystep
                     if (state.ratio != 0) {
                         rect.height = rect.width /state.ratio;
                     }
@@ -252,25 +256,26 @@ export class Canvas extends React.Component {
             }
 
             function handleMoveByKey(e) {
+                console.log('this is',this)
                 switch (e.key) {
                     case "ArrowLeft":
-                        rect.left = rect.left - 1
-                        rect.right = rect.right - 1
+                        rect.left = rect.left - keystep
+                        rect.right = rect.right - keystep
                         drawMove(context, rect)
                         break;
                     case "ArrowRight":
-                        rect.left = rect.left + 1
-                        rect.right = rect.right + 1
+                        rect.left = rect.left + keystep
+                        rect.right = rect.right + keystep
                         drawMove(context, rect)
                         break;
                     case "ArrowUp":
-                        rect.top = rect.top - 1
-                        rect.bottom = rect.bottom - 1
+                        rect.top = rect.top - keystep
+                        rect.bottom = rect.bottom - keystep
                         drawMove(context, rect)
                         break;
                     case "ArrowDown":
-                        rect.top = rect.top + 1
-                        rect.bottom = rect.bottom + 1
+                        rect.top = rect.top + keystep
+                        rect.bottom = rect.bottom + keystep
                         drawMove(context, rect)
                         break;
                 }
@@ -278,16 +283,16 @@ export class Canvas extends React.Component {
 
             function handleTopByKey(e) {
                 if (e.key == "ArrowUp") {
-                    rect.top = rect.top - 1
-                    rect.height = rect.height + 1
+                    rect.top = rect.top - keystep
+                    rect.height = rect.height + keystep
                     if (state.ratio != 0) {
                         rect.width = rect.height * state.ratio;
                     }
 
 
                 } else if (e.key == "ArrowDown") {
-                    rect.top = rect.top + 1
-                    rect.height = rect.height - 1
+                    rect.top = rect.top + keystep
+                    rect.height = rect.height - keystep
                     if (state.ratio != 0) {
                         rect.width = rect.height * state.ratio;
                     }
@@ -299,16 +304,16 @@ export class Canvas extends React.Component {
 
             function handleBottomByKey(e) {
                 if (e.key == "ArrowUp") {
-                    rect.bottom = rect.bottom - 1
-                    rect.height = rect.height - 1
+                    rect.bottom = rect.bottom - keystep
+                    rect.height = rect.height - keystep
                     if (state.ratio != 0) {
                         rect.width = rect.height * state.ratio;
                     }
 
 
                 } else if (e.key == "ArrowDown") {
-                    rect.bottom = rect.bottom + 1
-                    rect.height = rect.height + 1
+                    rect.bottom = rect.bottom + keystep
+                    rect.height = rect.height + keystep
                     if (state.ratio != 0) {
                         rect.width = rect.height * state.ratio;
                     }
@@ -490,27 +495,31 @@ export class Canvas extends React.Component {
             drawRect(draw, this.safeRect)
             spliceArr(this.margins, 2).map(
                 (point) => {
-                    draw.fillRect(point[0], point[1], 2, 2)
+                    draw.fillRect(point[0]-0.5, point[1]-0.5, 1, 1)
                     
                 }
             )
         }
         
+        /**
+         * @param {CanvasRenderingContext2D} p1
+         * 
+         */
         const drawRect = (context, rect) => {
-
-            context.strokeRect(rect.left - 1, rect.top - 1, rect.width + 2, rect.height + 2)
-            
+            context.lineWidth = 1 
+            context.strokeRect(rect.left - 0.5, rect.top - 0.5, rect.width , rect.height )
+                      
         }
 
 
         var spliceArr = function (arr, num) {
             let reArr = []
             arr.map(item => {
-                if (!reArr[reArr.length - 1] || reArr[reArr.length - 1].length === num) { // 新行添加
+                if (!reArr[reArr.length - 1] || reArr[reArr.length - 1].length === num) { 
                     reArr.push([])
                 }
 
-                if (reArr[reArr.length - 1].length !== num) { // 长度不够则添加
+                if (reArr[reArr.length - 1].length !== num) { 
                     reArr[reArr.length - 1].push(item)
                 }
 

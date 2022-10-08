@@ -76,29 +76,33 @@ export class ButtonArea extends React.Component {
         return (
             <div>
                 <div>
-                    size:
+                <text style={{display:'block'}}>size</text>
                     <input value={this.state.w} onChange={this.changeW} />
                     :
                     <input value={this.state.h} onChange={this.changeH} />
                 </div>
 
                 <div>
-                    bleed:
+                <text style={{display:'block'}}>bleed</text>
                     <input value={this.state.bw} onChange={this.changeBleedW} />
                     :
                     <input value={this.state.bh} onChange={this.changeBleedH} />
                 </div>
                 <div>
-                    <button onClick={() => this.onClick(OPRATION.CONTENT_RECT)}> content  area</button>
+                    <button onClick={() => this.onClick(OPRATION.CONTENT_RECT)}> transparent  area</button>
 
                 </div>
                 <form>
-                    magins
-                    <label className={"radio_lable"} for ={"left_top"} >left_top</label>
+                    <text style={{display:'block'}}>margins</text>
+                    
                     <input type={"radio"} id ={"left_top"} name={"action"} onClick={() => this.onClick(OPRATION.LEFT_TOP)} />
+                    <label className={"radio_lable"} for ={"left_top"} >left_top</label>               
                     <input type={"radio"} id ={"right_top"} name={"action"} onClick={() => this.onClick(OPRATION.RIGHT_TOP)} />
+                    <label className={"radio_lable"} for ={"right_top"} >right_top</label>
                     <input type={"radio"} id ={"right_bottom"} name={"action"} onClick={() => this.onClick(OPRATION.RIGHT_BOTTOM)} />
+                    <label className={"radio_lable"} for ={"right_bottom"} >right_bottom</label>
                     <input type={"radio"} id ={"left_bottom"} name={"action"} onClick={() => this.onClick(OPRATION.LEFT_BOTTOM)} />
+                    <label className={"radio_lable"} for ={"left_bottom"} >left_bottom</label>
 
 
                 </form>

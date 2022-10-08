@@ -9,6 +9,8 @@
     width: var(--width);
     height: var(--height);
     position: relative;
+    padding: 5px;
+    margin-bottom: 10px;
 }
 
 .image_area {
@@ -21,6 +23,7 @@
 }
 
 .radio_lable{
+    display: inline-block;
     
 }
 
