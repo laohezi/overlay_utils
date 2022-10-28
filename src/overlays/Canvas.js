@@ -3,6 +3,7 @@ import store from './model'
 import { actions } from './model'
 import { OPRATION } from './model'
 import '../overlays/Overlay.css'
+import { type } from "@testing-library/user-event/dist/type"
 
 export class Canvas extends React.Component {
     margins = [];
@@ -64,7 +65,7 @@ export class Canvas extends React.Component {
 
         var downRect
 
-        var keystep = 0.5
+        var keystep = 0.25
 
 
 
@@ -209,8 +210,15 @@ export class Canvas extends React.Component {
                 return HANDLE.NEW
             }
         }
+
+        /**
+         * 
+         * @param {import("react").KeyboardEvent} e 
+         */
         const handleKeyEvent = (e) => {
             console.log(e)
+            
+            //e.preventDefault()
             const  state = this.state
             function handleRightByKey(e) {
                 if (e.key == "ArrowLeft"){
@@ -280,7 +288,7 @@ export class Canvas extends React.Component {
                         break;
                 }
             }
-
+           
             function handleTopByKey(e) {
                 if (e.key == "ArrowUp") {
                     rect.top = rect.top - keystep
@@ -507,7 +515,7 @@ export class Canvas extends React.Component {
          */
         const drawRect = (context, rect) => {
             context.lineWidth = 1 
-            context.strokeRect(rect.left - 0.5, rect.top - 0.5, rect.width , rect.height )
+            context.strokeRect(rect.left , rect.top, rect.width , rect.height )
                       
         }
 

@@ -17,11 +17,20 @@ const initState = {
     bw:0,
     bh:0,
     json:"",
+    pw:1,
     margins:[0,0,0,0,0,0,0,0],
     image:{}
 }
 
 const rootReducer = (state, action) => {
+
+    function updatePSize(state){
+       const ph =  (state.h +state.bh)/(state.w+state.bw)*state.pw
+       return {
+        ...state, ph:ph
+       }
+        
+    }
     switch (action.type) {
         case "UPDATE_ACTION":
             return {
@@ -35,10 +44,15 @@ const rootReducer = (state, action) => {
             return {
                 ...state, w: action.payload.w, h: action.payload.h,ratio:ratio
             }
-            case "UPDATE_BLEED":
-            return {
-                ...state, bw: action.payload.bw, bh: action.payload.bh
-            }
+        case "UPDATE_PSIZE":
+        return {
+            ...state, pw:action.payload.pw
+        }
+
+        case "UPDATE_BLEED":
+        return {
+            ...state, bw: action.payload.bw, bh: action.payload.bh
+        }
         case "UPDATE_IMAGE":
             return {
                 ...state, image: action.payload
@@ -65,6 +79,10 @@ export const actions = {
         }
     ),
 
+    updatePSize: (newPSize) => ({
+        type: "UPDATE_PSIZE",
+        payload: newPSize
+    }),
     updateSize: (newSize) => ({
         type: "UPDATE_SIZE",
         payload: newSize

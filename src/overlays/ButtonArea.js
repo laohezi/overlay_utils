@@ -43,7 +43,15 @@ export class ButtonArea extends React.Component {
                 }
             )
         )
-
+    }
+    changePw =(e)=>{
+        store.dispatch(
+            actions.updatePSize(
+                {
+                    pw:e.target.value
+                }
+            )
+        )
     }
 
     changeBleedW = (e) => {
@@ -61,22 +69,27 @@ export class ButtonArea extends React.Component {
     }
 
     changeBleedH = (e) => {
-
-        store.dispatch(
+    store.dispatch(
             actions.updateBleed(
                 {
                     bw: this.state.bw, bh: e.target.value
                 }
             )
-        )
+      )
+    }
 
-
+    getPh = () => {
+        if (this.state != undefined) {
+            const state = this.state;
+            const ph = (Number.parseFloat(state.h) + Number.parseFloat(state.bh)*2) / (Number.parseFloat(state.w) + Number.parseFloat(state.bw)*2) * Number.parseFloat(state.pw);
+            return ph
+        }
     }
     render() {
         return (
             <div>
                 <div>
-                <text style={{display:'block'}}>size</text>
+                <text style={{display:'block'}}>transparent area(safe area size)</text>
                     <input value={this.state.w} onChange={this.changeW} />
                     :
                     <input value={this.state.h} onChange={this.changeH} />
@@ -88,6 +101,14 @@ export class ButtonArea extends React.Component {
                     :
                     <input value={this.state.bh} onChange={this.changeBleedH} />
                 </div>
+                <div>
+                <text style={{display:'block'}}>printable(size with bleeding)</text>
+                    <input value={this.state.pw} onChange={this.changePw} />
+                    :
+                    <input value={this.getPh()} />
+                </div>
+                
+
                 <div>
                     <button onClick={() => this.onClick(OPRATION.CONTENT_RECT)}> transparent  area</button>
 
